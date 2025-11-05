@@ -42,6 +42,9 @@ class PostController extends Controller
 
     public function show(Post $post)
     {
+        // Carga los comentarios con sus usuarios
+        $post->load('comments.user');
+
         return view('posts.show', compact('post'));
     }
 
@@ -82,4 +85,3 @@ class PostController extends Controller
         return redirect()->route('posts.index')->with('success', 'Publicación eliminada.');
     }
 }
-
