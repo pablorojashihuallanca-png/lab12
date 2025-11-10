@@ -20,6 +20,11 @@
                     <a href="{{ route('posts.index') }}" class="btn btn-primary mt-3">
                         Ir a Publicaciones
                     </a>
+                    
+                    <!-- Botón para ir a notas -->
+                    <a href="{{ route('notas.index') }}" class="btn btn-success mt-3 ms-2">
+                        Ir a Notas
+                    </a>
                 </div>
             </div>
         </div>
