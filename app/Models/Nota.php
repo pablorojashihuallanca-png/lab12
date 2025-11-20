@@ -10,19 +10,15 @@ class Nota extends Model
 {
     use HasFactory, SoftDeletes;
     protected $fillable = ['user_id', 'titulo', 'contenido'];
-    // Alcance global: Solo mostrará notas activas (no completadas)
-    protected static function booted()
-    {
-        static::addGlobalScope('activa', function (Builder $builder) {
-            $builder->whereHas('recordatorio', function ($query) {
-                $query->where('fecha_vencimiento', '>=', now())->where('completado', false);
-            });
-        });
-    }
     // Accesor: Formatear título con estado
     public function getTituloFormateadoAttribute()
     {
-        return $this->recordatorio->completado ? "[Completado] {$this->titulo}" : $this->titulo;
+        // Verifica si el recordatorio existe y está cargado antes de usarlo.
+        if ($this->recordatorio && $this->recordatorio->completado) {
+            return "[Completado] {$this->titulo}";
+        }
+
+        return $this->titulo;
     }
     // Relación: Nota pertenece a un usuario
     public function user()
@@ -33,5 +29,21 @@ class Nota extends Model
     public function recordatorio()
     {
         return $this->hasOne(Recordatorio::class);
+    }
+
+    /**
+     * Scope para obtener solo las notas activas (no vencidas y no completadas).
+     */
+    public function scopeActivas($query)
+    {
+        return $query->whereHas('recordatorio', function ($q) {
+            $q->whereDate('fecha_vencimiento', '>=', today())->where('completado', false);
+        });
+    }
+
+    // Relación: Una nota tiene muchas actividades
+    public function actividades()
+    {
+        return $this->hasMany(Actividad::class);
     }
 }

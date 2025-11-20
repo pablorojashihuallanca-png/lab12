@@ -91,6 +91,31 @@
                                                             </small>
                                                         </div>
                                                     @endif
+
+                                                    {{-- Sección de Actividades --}}
+                                                    <div class="mt-3 ps-3">
+                                                        <h6>Actividades:</h6>
+                                                        @forelse($nota->actividades as $actividad)
+                                                            <div class="d-flex justify-content-between align-items-center">
+                                                                <span>
+                                                                    - {{ $actividad->descripcion }} <span class="badge bg-info text-dark">{{ $actividad->estado }}</span>
+                                                                </span>
+                                                                <div>
+                                                                    <a href="{{ route('actividades.edit', $actividad) }}" class="btn btn-sm btn-warning">Editar</a>
+                                                                    <form action="{{ route('actividades.destroy', $actividad) }}" method="POST" class="d-inline">
+                                                                        @csrf
+                                                                        @method('DELETE')
+                                                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro?')">Borrar</button>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        @empty
+                                                            <p class="text-muted small">No hay actividades para esta nota.</p>
+                                                        @endforelse
+                                                        <a href="{{ route('notas.actividades.create', $nota) }}" class="btn btn-sm btn-success mt-2">
+                                                            + Agregar Actividad
+                                                        </a>
+                                                    </div>
                                                 </div>
                                                 <div class="card-footer bg-transparent border-top-0">
                                                     <small class="text-muted">
